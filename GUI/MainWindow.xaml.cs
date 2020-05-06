@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.Win32;
 
 namespace WpfApp1
 {
@@ -25,20 +27,53 @@ namespace WpfApp1
             InitializeComponent();
         }
 
+        public List<string> fileList = new List<string>();
+
         private void BrowseButton_Click(object sender, RoutedEventArgs e)
         {
             // Create OpenFileDialog
-            Microsoft.Win32.OpenFileDialog openFileDlg = new Microsoft.Win32.OpenFileDialog();
-          
-            // Launch OpenFileDialog by calling ShowDialog method
-            Nullable<bool> result = openFileDlg.ShowDialog();
-            // Get the selected file name and display in a TextBox.
-            // Load content of file in a TextBlock
-            if (result == true)
+            OpenFileDialog openFile = new Microsoft.Win32.OpenFileDialog();
+            openFile.Multiselect = true;
+            openFile.Filter = "dll files (*.dll)|*.dll|All files (*.*)|*.*";
+            openFile.InitialDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
+            
+            if (openFile.ShowDialog() == true)
             {
-                FileNameTextBox.Text = openFileDlg.FileName;
-                TextBlock1.Text = System.IO.File.ReadAllText(openFileDlg.FileName);
+                foreach(string fileName in openFile.FileNames)
+                {
+                    fileList.Add(fileName);
+                    fileBox.Items.Add(fileName);
+                }
+            }
+
+            foreach (string name in fileList)
+            {
+                Console.WriteLine(name + "\n");
             }
         }
+
+        private void Submit_Click(object sender, RoutedEventArgs e)
+        {
+            string jsonOutput = "{'files':[";
+
+            if (fileList.Count == 0)
+            {
+                // need error message here
+            }
+            else
+            {
+                foreach (string name in fileList)
+                {
+                    jsonOutput += "'";
+                    jsonOutput += name;
+                    jsonOutput += "',";
+                }
+            }
+
+            jsonOutput += "]}";
+
+            verify.Items.Add(jsonOutput);
+        }
+        
     }
 }
