@@ -62,7 +62,7 @@ namespace testHarnessGui
         // procedure to create output string
         private void Submit_Click(object sender, RoutedEventArgs e)
         {
-            
+            App.netClient.StartClient();
         }
         
     } // end partial class window

@@ -49,9 +49,10 @@ namespace testHarnessGui
                         Console.WriteLine("Socket connected to {0}",
                             sender.RemoteEndPoint.ToString());
 
-                        int numOfMessages = 3;
-
-                        byte[] msg = Encoding.ASCII.GetBytes("3");
+                        // encode count of file list as an int
+                        int numOfMessages = App.dllObj.fileList.Count();
+                        // send count of file list
+                        byte[] msg = Encoding.ASCII.GetBytes(numOfMessages.ToString());
 
                         // Send the data through the socket.  
                         int bytesSent = sender.Send(msg);
@@ -63,7 +64,11 @@ namespace testHarnessGui
 
                         for (int i = 0; i < numOfMessages; i++)
                         {
-                            msg = Encoding.ASCII.GetBytes("/ExamplePath" + (i + 1));
+                            // why i + 1?
+
+                            string filePath = App.dllObj.fileList.Dequeue();
+
+                            msg = Encoding.ASCII.GetBytes(filePath + (i + 1));
 
                             // Send the data through the socket.  
                             bytesSent = sender.Send(msg);
