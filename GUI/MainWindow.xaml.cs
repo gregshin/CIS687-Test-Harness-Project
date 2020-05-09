@@ -29,13 +29,8 @@ namespace testHarnessGui
         public MainWindow()
         {
             // init main window component
-            InitializeComponent();
-
-            
+            InitializeComponent();   
         }
-
-        // data member to hold the file list
-        //
 
         private void BrowseButton_Click(object sender, RoutedEventArgs e)
         {

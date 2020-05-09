@@ -17,7 +17,6 @@ namespace testHarnessGui
     /// </summary>
     public partial class App : Application
     {
-
         static public class dllObj
         {
             static public Queue<string> fileList = new Queue<string>();
