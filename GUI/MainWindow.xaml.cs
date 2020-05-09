@@ -25,12 +25,12 @@ namespace testHarnessGui
     /// </summary>
     public partial class MainWindow : Window
     {
-        
+
         public MainWindow()
         {
             // init main window component
             InitializeComponent();   
-        }
+        } // end main window
 
         private void BrowseButton_Click(object sender, RoutedEventArgs e)
         {
@@ -52,14 +52,13 @@ namespace testHarnessGui
                     fileBox.Items.Add(fileName);
                 }
             }
-        }
+        } // end browse button click event handler
 
         // procedure to create output string
         private void Submit_Click(object sender, RoutedEventArgs e)
         {
             App.netClient.StartClient();
-        }
-        
+        } // end submit click event handler
     } // end partial class window
-}
+} // end namespace
 

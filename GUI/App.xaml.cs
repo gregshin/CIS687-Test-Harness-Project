@@ -63,11 +63,11 @@ namespace testHarnessGui
 
                         for (int i = 0; i < numOfMessages; i++)
                         {
-                            // why i + 1?
-
+                            // dequeue from list
                             string filePath = App.dllObj.fileList.Dequeue();
 
-                            msg = Encoding.ASCII.GetBytes(filePath + (i + 1));
+                            // encode message as ascii
+                            msg = Encoding.ASCII.GetBytes(filePath);
 
                             // Send the data through the socket.  
                             bytesSent = sender.Send(msg);
@@ -93,18 +93,12 @@ namespace testHarnessGui
                     {
                         Console.WriteLine("Unexpected exception : {0}", e.ToString());
                     }
-
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e.ToString());
                 }
             }
-
-            //static void Main(string[] args)
-            //{
-            //    StartClient();
-            //}
         }
     }
 }
