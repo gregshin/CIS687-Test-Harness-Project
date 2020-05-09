@@ -20,8 +20,8 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
-    <ProjectGuid>{D99C541C-4DC1-43F5-BBC4-AB4A69ACD8E7}</ProjectGuid>
-    <RootNamespace>cis687threadmanager</RootNamespace>
+    <ProjectGuid>{6F3B182D-3704-4CA5-85DB-31ADE09AE5C1}</ProjectGuid>
+    <RootNamespace>ThreadManager</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -138,11 +138,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Source.cpp" />
-    <ClCompile Include="ThreadManager.cpp" />
+    <ClInclude Include="ThreadManager.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ThreadManager.h" />
+    <ClCompile Include="Source.cpp" />
+    <ClCompile Include="ThreadManager.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
