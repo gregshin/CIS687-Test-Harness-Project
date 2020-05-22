@@ -1,60 +1,62 @@
 #include "ThreadManager.h"
 
-#include <chrono>
-#include <iostream>
-#include <string>
-#include <thread>
-#include <time.h>
+#include <atomic>
+using std::atomic;
 
+#include <chrono>
 using std::chrono::system_clock;
+
+#include <condition_variable>
+using std::condition_variable;
+
+#include <functional>
+using std::function;
+
+#include <iostream>
 using std::cout;
 using std::endl;
+
+#include <mutex>
+using std::mutex;
+using std::unique_lock;
+
+#include <string>
 using std::string;
+using std::wstring;
+
+#include <thread>
 using std::thread;
+
+#include <vector>
+using std::vector;
+
+#include <Windows.h>
 
 // Default constructor
 ThreadManager::ThreadManager() 
-	: runningThreads{ 1 }
+	: runningThreads{ 0 }, done{ false }
 {
 	setMaxThreads();
+	setThreads();
 };
 
 // Overloaded constructor - allows setting number of threads
 ThreadManager::ThreadManager(int threads) 
-	: runningThreads{ 1 }
+	: runningThreads{ 0 }, done{ false }
 {
 	setMaxThreads(threads);
-
+	setThreads();
 };
 
 // Default destructor
 ThreadManager::~ThreadManager() {
-
-};
-
-// Function to start a thread and run a DLL process
-string ThreadManager::startThread(string dllLocation) {
-	runningThreads++;
-	string result = "";
-	result += "Test starting at: " + getTime();
-	// parse DLL
-	thread thr([]() {cout << "wee" << endl; });
-	thr.detach();
-	/* 
-	try {
-		result += "This is the test! \n";
-		thread thr(sampleFunc());
+	unique_lock<mutex> lock(taskMutex);
+	done = true;
+	lock.unlock();
+	taskAvailable.notify_all();
+	for (auto& thr : threads) {
 		thr.join();
-		result += "Test Passed! \n";
 	}
-	catch (string e) {
-		result += e;
-		result += "Test Failed! \n";
-	}
-	*/
-	result += "Test ending at: " + getTime();
-	runningThreads--;
-	return result;
 };
 
 // Getter for maximum number of threads
@@ -70,19 +72,59 @@ void ThreadManager::setMaxThreads() {
 };
 
 // Setter for maximum number of threads - sets to user specified number or max possible for CPU
-void ThreadManager::setMaxThreads(int threads) {
+void ThreadManager::setMaxThreads(unsigned int threads) {
 	maxThreads = (thread::hardware_concurrency() > threads)
 		? threads
 		: thread::hardware_concurrency() - 1;
 };
 
+// Getter for the number of threads currently running
 int ThreadManager::getRunningThreads() {
 	return runningThreads;
-}
+};
 
+// Setter for the number of threads running
 void ThreadManager::setRunningThreads() {
 	runningThreads = 0;
-}
+};
+
+// Setter for vector of threads
+void ThreadManager::setThreads() {
+	function<void()> startThreadWrapper = [this]() {
+		startThread();
+	};
+
+	for (auto i = 0; i < maxThreads; i++) {
+		threads.push_back(thread(startThreadWrapper));
+	}
+};
+
+// Function to start a thread and run a DLL process
+void ThreadManager::startThread() {
+	function<void()> task;
+	string result = "";
+	while (true) {
+		unique_lock<mutex> lock(taskMutex);
+		taskAvailable.wait(lock, [this]() {return !dlls.empty() || !done; });
+		if (dlls.empty()) {
+			return;
+		}
+		task = dlls.front();
+		dlls.pop();
+		lock.unlock();
+		try {
+			result = "Test starting at: " + getTime();
+			task();
+			result += "Test Passed!\n";
+		}
+		catch (string e) {
+			result += "Test failed with the following error:\n";
+			result += e;
+		}
+		result += "Test ended at: " + getTime();
+		cout << result << endl;
+	}
+};
 
 bool ThreadManager::isThreadAvailable() {
 	return runningThreads < maxThreads;
@@ -97,7 +139,51 @@ string ThreadManager::getTime() {
 	return string(displayTime);
 };
 
-// Helper function for testing
-void ThreadManager::sampleFunc() {
-	std::this_thread::sleep_for(std::chrono::seconds(2000));
+typedef bool(__stdcall* _iTest)();
+
+void ThreadManager::loadDLL(string dllLocation) {
+	// Convert string to wide string
+	wstring location(dllLocation.begin(), dllLocation.end());
+
+	// Attempt to load the dll
+	HINSTANCE getDLL = LoadLibrary(location.c_str());
+	if (!getDLL) {
+		cout << "Could not load the DLL!" << endl;
+		exit(1);
+	}
+
+	// Attempt to get the function
+	_iTest iTest = (_iTest)GetProcAddress(getDLL, "iTest");
+	if (!iTest) {
+		cout << "Could not load the DLL function!" << endl;
+		exit(1);
+	}
+
+	// Lock the list of DLLs to add the new DLL
+	unique_lock<mutex> lock(taskMutex);
+	dlls.push(iTest);
+	lock.unlock();
+	taskAvailable.notify_one();
+};
+
+void ThreadManager::testLoad() {
+	unique_lock<mutex> lock(taskMutex);
+	dlls.push([]() {
+		return true;
+		}
+	);
+	lock.unlock();
+	taskAvailable.notify_one();
+};
+
+void ThreadManager::otherTest() {
+	unique_lock<mutex> lock(taskMutex);
+	dlls.push([]() {
+		string exce = "A PROBLEM\n";
+		throw exce;
+		return true;
+		}
+	);
+	lock.unlock();
+	taskAvailable.notify_one();
 };
