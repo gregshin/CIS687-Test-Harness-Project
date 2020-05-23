@@ -7,6 +7,7 @@
 #include <ws2tcpip.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "InputQueue.h"
 
 // Need to link with Ws2_32.lib
 #pragma comment (lib, "Ws2_32.lib")
@@ -14,8 +15,10 @@
 #define DEFAULT_BUFLEN 1024
 #define DEFAULT_PORT "1234"
 
+
 int main(void)
 {
+    InputQueue lrcIQ(10);
     WSADATA wsaData;
     int iResult;
 
@@ -95,6 +98,8 @@ int main(void)
     do {
 
         iResult = recv(ClientSocket, recvbuf, recvbuflen, 0);
+        recvbuf[iResult] = 0;
+        lrcIQ.enqueue(std::string(recvbuf));
         if (iResult > 0) {
             printf("Bytes received: %d\n", iResult);
 
@@ -131,6 +136,8 @@ int main(void)
     // cleanup
     closesocket(ClientSocket);
     WSACleanup();
+
+    lrcIQ.StartProcessing();
 
     return 0;
 }

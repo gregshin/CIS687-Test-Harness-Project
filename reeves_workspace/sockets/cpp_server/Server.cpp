@@ -1,5 +1,11 @@
-#include "Server.hpp"
-
+#include <iostream>
+#include <errno.h>
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <vector>
 
 int main(int argc, char *argv[])
 {
@@ -67,22 +73,25 @@ int main(int argc, char *argv[])
               << ( ( ntohl(peeraddr.sin_addr.s_addr) >> 16) & 0xff ) << "."
               << ( ( ntohl(peeraddr.sin_addr.s_addr) >> 8) & 0xff )  << "."
               <<   ( ntohl(peeraddr.sin_addr.s_addr) & 0xff ) << ", port "   // Low byte of addr
-              << ntohs(peeraddr.sin_port) << " ";
+              << ntohs(peeraddr.sin_port) << " " << std::endl;
  
     res = close(s0);    // Close the listen socket
   
     char buffer[1024];
+	
+	//Receives the initial message from the GUI
     res = read(s1, buffer, 1023);
     if (res < 0) {
         std::cerr << "Error: " << strerror(errno) << std::endl;
         exit(1);
     }
-    buffer[res] = 0;
+    buffer[res] = 0; //gets rid of extra byte
     std::cout << "Client wants to send " << buffer << " messages" << std::endl;
 	int numMessages = atoi(buffer);
 		
     const std::string message_to_client = "received message";
 	
+	//Send an acknowledgement packet back to the gui
 	std::cout << "Sending Ack to client" << std::endl;
 	write(s1, message_to_client.c_str(), message_to_client.length());
 	
@@ -93,10 +102,10 @@ int main(int argc, char *argv[])
 			std::cerr << "Error: " << strerror(errno) << std::endl;
 			exit(1);
 		}
-		buffer[res] = 0;
+		buffer[res] = 0; //gets rid of the extra byte
+		
 		std::cout << "Path to Test is " << buffer << std::endl;
 		
-		const std::string message_to_client = "received message";
 	
 		std::cout << "Sending Ack to client" << std::endl;
 		write(s1, message_to_client.c_str(), message_to_client.length());

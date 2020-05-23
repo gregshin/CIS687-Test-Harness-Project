@@ -8,57 +8,30 @@
 
 ///////////////////////////////////////////////
 
-
-
-
-
 //base class
 
-
-
 #include <iostream>
-
 #include <condition_variable>
-
 #include <mutex>
 
-
-
 using std::cout;
-
 using std::cin;
-
 using std::endl;
-
 using std::string;
-
-
-
-
 
 // prevent multiple inclusions of header
 
 #ifndef InputQueue_H
-
 #define InputQueue_H
 
-
-
 class InputQueue
-
 {
-
-
-
-
-
 public:
 
 	InputQueue(int);//constructor
-
 	~InputQueue();//destructor
 
-
+	void StartProcessing();
 
 	bool getroom();//ask Thread Manager if it has room to run another test Thread Manager returns true or false
 

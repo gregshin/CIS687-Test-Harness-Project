@@ -11,30 +11,19 @@
 
 
 #include "InputQueue.h"
-
-
-
 #include <iostream>
-
 #include <condition_variable>
-
 #include <mutex>
 
-
-
 using std::cout;
-
 using std::cin;
-
 using std::endl;
-
 using std::string;
-
-
 
 //constructor
 
-InputQueue::InputQueue(int n) {//enter size of queue in main()
+InputQueue::InputQueue(int n) 
+{ //enter size of queue in main()
 
 	room = true;//initially there is room on the thread manager to run tests
 
@@ -51,19 +40,16 @@ InputQueue::InputQueue(int n) {//enter size of queue in main()
 	buffer = new string[qsize];//allocate memory for string queue in heap
 
 	count = 0;//amount of elements in queue
+}
+InputQueue::~InputQueue() {}//destructor
+
+void InputQueue::StartProcessing()
+{
 
 }
 
-
-
-InputQueue::~InputQueue() {}//destructor
-
-
-
-void InputQueue::enqueue(string e) {//add element at back of queue
-
-
-
+void InputQueue::enqueue(string e)
+{//add element at back of queue
 	empty = false;//set class data member to false
 
 
