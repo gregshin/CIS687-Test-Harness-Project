@@ -1,3 +1,4 @@
+#include "InputQueue.h"
 #include "ThreadManager.h"
 
 #include <atomic>
@@ -57,49 +58,60 @@ ThreadManager::~ThreadManager() {
 	for (auto& thr : threads) {
 		thr.join();
 	}
+	lpcIQ->~InputQueue();
 };
 
+// Empty the input queue and load the DLL information
 void ThreadManager::startProcessing()
 {
+	while (!lpcIQ->getempty()) {
+		loadDLL(lpcIQ->dequeue());
+	}
+};
 
-}
-
-void ThreadManager::enqueue(std::string path)
+// Wrapper for input queue's enqueue function
+void ThreadManager::enqueue(string path)
 {
 	lpcIQ->enqueue(path);
-}
+};
 
 // Getter for maximum number of threads
-int ThreadManager::getMaxThreads() {
+int ThreadManager::getMaxThreads()
+{
 	return maxThreads;
 };
 
 // Setter for maximum number of threads - sets max to total hardware can support
-void ThreadManager::setMaxThreads() {
+void ThreadManager::setMaxThreads()
+{
 	maxThreads = (thread::hardware_concurrency() > 2)
 		? thread::hardware_concurrency() - 1
 		: 1;
 };
 
 // Setter for maximum number of threads - sets to user specified number or max possible for CPU
-void ThreadManager::setMaxThreads(unsigned int threads) {
+void ThreadManager::setMaxThreads(unsigned int threads)
+{
 	maxThreads = (thread::hardware_concurrency() > threads)
 		? threads
 		: thread::hardware_concurrency() - 1;
 };
 
 // Getter for the number of threads currently running
-int ThreadManager::getRunningThreads() {
+int ThreadManager::getRunningThreads()
+{
 	return runningThreads;
 };
 
 // Setter for the number of threads running
-void ThreadManager::setRunningThreads() {
+void ThreadManager::setRunningThreads()
+{
 	runningThreads = 0;
 };
 
 // Setter for vector of threads
-void ThreadManager::setThreads() {
+void ThreadManager::setThreads()
+{
 	function<void()> startThreadWrapper = [this]() {
 		startThread();
 	};
@@ -110,7 +122,8 @@ void ThreadManager::setThreads() {
 };
 
 // Function to start a thread and run a DLL process
-void ThreadManager::startThread() {
+void ThreadManager::startThread()
+{
 	function<void()> task;
 	string result = "";
 	while (true) {
@@ -136,12 +149,14 @@ void ThreadManager::startThread() {
 	}
 };
 
-bool ThreadManager::isThreadAvailable() {
+bool ThreadManager::isThreadAvailable()
+{
 	return runningThreads < maxThreads;
 };
 
 // Helper function to return a string representing the current time
-string ThreadManager::getTime() {
+string ThreadManager::getTime()
+{
 	auto rawTime = system_clock::now();
 	const time_t convertedTime = system_clock::to_time_t(rawTime);
 	char displayTime[30];
@@ -151,7 +166,8 @@ string ThreadManager::getTime() {
 
 typedef bool(__stdcall* _iTest)();
 
-void ThreadManager::loadDLL(string dllLocation) {
+void ThreadManager::loadDLL(string dllLocation)
+{
 	// Convert string to wide string
 	wstring location(dllLocation.begin(), dllLocation.end());
 
@@ -176,7 +192,8 @@ void ThreadManager::loadDLL(string dllLocation) {
 	taskAvailable.notify_one();
 };
 
-void ThreadManager::testLoad() {
+void ThreadManager::testLoad()
+{
 	unique_lock<mutex> lock(taskMutex);
 	dlls.push([]() {
 		return true;
@@ -186,7 +203,8 @@ void ThreadManager::testLoad() {
 	taskAvailable.notify_one();
 };
 
-void ThreadManager::otherTest() {
+void ThreadManager::otherTest()
+{
 	unique_lock<mutex> lock(taskMutex);
 	dlls.push([]() {
 		string exce = "A PROBLEM\n";
