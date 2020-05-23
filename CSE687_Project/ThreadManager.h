@@ -1,6 +1,7 @@
 #ifndef THREAD_MANAGER_H
 #define THREAD_MANAGER_H
 
+#include "InputQueue.h"
 #include <atomic>
 #include <functional>
 #include <condition_variable>
@@ -10,7 +11,8 @@
 #include <vector>
 #include <queue>
 
-class ThreadManager {
+class ThreadManager 
+{
 	public:
 		// Constructors
 		ThreadManager();
@@ -28,11 +30,15 @@ class ThreadManager {
 		void setThreads();
 
 		// Public functions
+		void startProcessing();
+		void enqueue(std::string path);
 		void startThread();
 		bool isThreadAvailable();
 		void testLoad();
 		void otherTest();
 	private:
+		// Instance of InputQueue
+		InputQueue* lpcIQ = new InputQueue(100);
 		// Private helper functions
 		std::string getTime();
 		void loadDLL(std::string dllLocation);

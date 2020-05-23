@@ -7,7 +7,7 @@
 #include <ws2tcpip.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "InputQueue.h"
+#include "ThreadManager.h"
 
 // Need to link with Ws2_32.lib
 #pragma comment (lib, "Ws2_32.lib")
@@ -18,7 +18,7 @@
 
 int main(void)
 {
-    InputQueue lrcIQ(10);
+    ThreadManager lrcTM;
     WSADATA wsaData;
     int iResult;
 
@@ -99,7 +99,7 @@ int main(void)
 
         iResult = recv(ClientSocket, recvbuf, recvbuflen, 0);
         recvbuf[iResult] = 0;
-        lrcIQ.enqueue(std::string(recvbuf));
+        lrcTM.enqueue(std::string(recvbuf));
         if (iResult > 0) {
             printf("Bytes received: %d\n", iResult);
 
@@ -137,7 +137,7 @@ int main(void)
     closesocket(ClientSocket);
     WSACleanup();
 
-    lrcIQ.StartProcessing();
+    lrcTM.startProcessing();
 
     return 0;
 }

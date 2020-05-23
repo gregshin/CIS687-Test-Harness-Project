@@ -31,8 +31,6 @@ public:
 	InputQueue(int);//constructor
 	~InputQueue();//destructor
 
-	void StartProcessing();
-
 	bool getroom();//ask Thread Manager if it has room to run another test Thread Manager returns true or false
 
 	void setroom(bool);//set room private class data member 

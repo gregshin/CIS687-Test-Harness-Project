@@ -59,6 +59,16 @@ ThreadManager::~ThreadManager() {
 	}
 };
 
+void ThreadManager::startProcessing()
+{
+
+}
+
+void ThreadManager::enqueue(std::string path)
+{
+	lpcIQ->enqueue(path);
+}
+
 // Getter for maximum number of threads
 int ThreadManager::getMaxThreads() {
 	return maxThreads;

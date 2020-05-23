@@ -43,11 +43,6 @@ InputQueue::InputQueue(int n)
 }
 InputQueue::~InputQueue() {}//destructor
 
-void InputQueue::StartProcessing()
-{
-
-}
-
 void InputQueue::enqueue(string e)
 {//add element at back of queue
 	empty = false;//set class data member to false
