@@ -100,5 +100,11 @@ namespace testHarnessGui
                 }
             }
         }
+
+        public static void ServerRecive(Socket receiveSocket)
+        {
+            Socket s = receiveSocket.Accept();
+            Console.WriteLine("Connection accepted from " + s.RemoteEndPoint);
+        } 
     }
 }
