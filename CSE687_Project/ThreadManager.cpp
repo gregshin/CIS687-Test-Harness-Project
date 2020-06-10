@@ -62,7 +62,7 @@ ThreadManager::~ThreadManager() {
 };
 
 // Empty the input queue and load the DLL information
-void ThreadManager::startProcessing()
+void ThreadManager::startProcessing(std::vector<std::string>& resultVector)
 {
 	while (!lpcIQ->getempty()) {
 		loadDLL(lpcIQ->dequeue());
@@ -166,7 +166,7 @@ string ThreadManager::getTime()
 
 typedef bool(__stdcall* _iTest)();
 
-void ThreadManager::loadDLL(string dllLocation)
+void ThreadManager::loadDLL(string dllLocation, std::vector<std::string>& resultVector)
 {
 	// Convert string to wide string
 	wstring location(dllLocation.begin(), dllLocation.end());

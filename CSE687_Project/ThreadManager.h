@@ -30,7 +30,7 @@ class ThreadManager
 		void setThreads();
 
 		// Public functions
-		void startProcessing();
+		void startProcessing(std::vector<std::string>& resultVector);
 		void enqueue(std::string path);
 		void startThread();
 		bool isThreadAvailable();
@@ -41,7 +41,7 @@ class ThreadManager
 		InputQueue* lpcIQ = new InputQueue(100);
 		// Private helper functions
 		std::string getTime();
-		void loadDLL(std::string dllLocation);
+		void loadDLL(std::string dllLocation, std::vector<std::string>& resultVector);
 
 		// Private data members
 		int maxThreads;
