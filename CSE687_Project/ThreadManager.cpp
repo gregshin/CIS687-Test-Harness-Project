@@ -50,7 +50,8 @@ ThreadManager::ThreadManager(int threads)
 };
 
 // Default destructor
-ThreadManager::~ThreadManager() {
+ThreadManager::~ThreadManager()
+{
 	unique_lock<mutex> lock(taskMutex);
 	done = true;
 	lock.unlock();
@@ -64,7 +65,8 @@ ThreadManager::~ThreadManager() {
 // Empty the input queue and load the DLL information
 void ThreadManager::startProcessing(std::vector<std::string>& resultVector)
 {
-	while (!lpcIQ->getempty()) {
+	while (!lpcIQ->getempty())
+	{
 		loadDLL(lpcIQ->dequeue());
 	}
 };
@@ -112,11 +114,13 @@ void ThreadManager::setRunningThreads()
 // Setter for vector of threads
 void ThreadManager::setThreads()
 {
-	function<void()> startThreadWrapper = [this]() {
+	function<void()> startThreadWrapper = [this]()
+	{
 		startThread();
 	};
 
-	for (auto i = 0; i < maxThreads; i++) {
+	for (auto i = 0; i < maxThreads; i++)
+	{
 		threads.push_back(thread(startThreadWrapper));
 	}
 };
@@ -126,32 +130,31 @@ void ThreadManager::startThread()
 {
 	function<void()> task;
 	string result = "";
-	while (true) {
+	while (true)
+	{
 		unique_lock<mutex> lock(taskMutex);
 		taskAvailable.wait(lock, [this]() {return !dlls.empty() || !done; });
-		if (dlls.empty()) {
+		if (dlls.empty())
+		{
 			return;
 		}
 		task = dlls.front();
 		dlls.pop();
 		lock.unlock();
-		try {
+		try
+		{
 			result = "Test starting at: " + getTime();
 			task();
 			result += "Test Passed!\n";
 		}
-		catch (string e) {
+		catch (string e)
+		{
 			result += "Test failed with the following error:\n";
 			result += e;
 		}
 		result += "Test ended at: " + getTime();
 		cout << result << endl;
 	}
-};
-
-bool ThreadManager::isThreadAvailable()
-{
-	return runningThreads < maxThreads;
 };
 
 // Helper function to return a string representing the current time
@@ -164,8 +167,10 @@ string ThreadManager::getTime()
 	return string(displayTime);
 };
 
+// Defining the holder for the iTest function
 typedef bool(__stdcall* _iTest)();
 
+// Function to load a DLL given a location and add that DLL's iTest function to the task queue
 void ThreadManager::loadDLL(string dllLocation, std::vector<std::string>& resultVector)
 {
 	// Convert string to wide string
@@ -173,14 +178,16 @@ void ThreadManager::loadDLL(string dllLocation, std::vector<std::string>& result
 
 	// Attempt to load the dll
 	HINSTANCE getDLL = LoadLibrary(location.c_str());
-	if (!getDLL) {
+	if (!getDLL)
+	{
 		cout << "Could not load the DLL!" << endl;
 		exit(1);
 	}
 
 	// Attempt to get the function
 	_iTest iTest = (_iTest)GetProcAddress(getDLL, "iTest");
-	if (!iTest) {
+	if (!iTest)
+	{
 		cout << "Could not load the DLL function!" << endl;
 		exit(1);
 	}
@@ -188,30 +195,6 @@ void ThreadManager::loadDLL(string dllLocation, std::vector<std::string>& result
 	// Lock the list of DLLs to add the new DLL
 	unique_lock<mutex> lock(taskMutex);
 	dlls.push(iTest);
-	lock.unlock();
-	taskAvailable.notify_one();
-};
-
-void ThreadManager::testLoad()
-{
-	unique_lock<mutex> lock(taskMutex);
-	dlls.push([]() {
-		return true;
-		}
-	);
-	lock.unlock();
-	taskAvailable.notify_one();
-};
-
-void ThreadManager::otherTest()
-{
-	unique_lock<mutex> lock(taskMutex);
-	dlls.push([]() {
-		string exce = "A PROBLEM\n";
-		throw exce;
-		return true;
-		}
-	);
 	lock.unlock();
 	taskAvailable.notify_one();
 };

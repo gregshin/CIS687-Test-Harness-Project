@@ -30,27 +30,26 @@ class ThreadManager
 		void setThreads();
 
 		// Public functions
-		void startProcessing(std::vector<std::string>& resultVector);
 		void enqueue(std::string path);
+		void startProcessing(std::vector<std::string>& resultVector);
 		void startThread();
-		bool isThreadAvailable();
-		void testLoad();
-		void otherTest();
+
 	private:
 		// Instance of InputQueue
 		InputQueue* lpcIQ = new InputQueue(100);
+
 		// Private helper functions
 		std::string getTime();
 		void loadDLL(std::string dllLocation, std::vector<std::string>& resultVector);
 
 		// Private data members
-		int maxThreads;
-		int runningThreads;
-		std::vector<std::thread> threads;
-		std::mutex taskMutex;
-		std::condition_variable taskAvailable;
 		std::queue<std::function<bool()>> dlls;
 		std::atomic<bool> done;
+		int maxThreads;
+		int runningThreads;
+		std::condition_variable taskAvailable;
+		std::mutex taskMutex;
+		std::vector<std::thread> threads;
 };
 
 #endif
