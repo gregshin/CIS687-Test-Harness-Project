@@ -50,32 +50,20 @@ namespace testHarnessGui
                         Console.WriteLine("Socket connected to {0}",
                             sender.RemoteEndPoint.ToString());
 
-                        // encode count of file list as an int
-                        int numOfMessages = App.dllObj.fileList.Count();
-                        // send count of file list
-                        byte[] msg = Encoding.ASCII.GetBytes(numOfMessages.ToString());
+                        byte[] msg;
+                        int bytesSent;
+                        int bytesRec;
 
-                        // Send the data through the socket.  
-                        int bytesSent = sender.Send(msg);
-
-                        // Receive the response from the remote device.  
-                        int bytesRec = sender.Receive(bytes);
-                        Console.WriteLine("Echoed test = {0}",
-                            Encoding.ASCII.GetString(bytes, 0, bytesRec));
-
-                        for (int i = 0; i < numOfMessages; i++)
-                        {
-                            // dequeue from list
-                            string filePath = App.dllObj.fileList.Dequeue();
-
+                        foreach (String filePath in App.dllObj.fileList)
+                        { 
                             // encode message as ascii
                             msg = Encoding.ASCII.GetBytes(filePath);
 
                             // Send the data through the socket.  
                             bytesSent = sender.Send(msg);
                             bytesRec = sender.Receive(bytes);
-                            Console.WriteLine("Echoed test = {0}",
-                            Encoding.ASCII.GetString(bytes, 0, bytesRec));
+                            Console.WriteLine("Echo: ",
+                                Encoding.ASCII.GetString(bytes, 0, bytesRec));
                         }
 
                         // Release the socket.  

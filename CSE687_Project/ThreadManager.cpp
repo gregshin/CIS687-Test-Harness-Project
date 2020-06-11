@@ -67,7 +67,7 @@ void ThreadManager::startProcessing(std::vector<std::string>& resultVector)
 {
 	while (!lpcIQ->getempty())
 	{
-		loadDLL(lpcIQ->dequeue());
+		loadDLL(lpcIQ->dequeue(), resultVector);
 	}
 };
 

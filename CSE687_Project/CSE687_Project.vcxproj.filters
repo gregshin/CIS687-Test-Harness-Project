@@ -21,10 +21,10 @@
     <ClCompile Include="ThreadManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DLL.cpp">
+    <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Main.cpp">
+    <ClCompile Include="SocketHelper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -32,10 +32,10 @@
     <ClInclude Include="InputQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DLL.h">
+    <ClInclude Include="ThreadManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ThreadManager.h">
+    <ClInclude Include="SocketHelper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

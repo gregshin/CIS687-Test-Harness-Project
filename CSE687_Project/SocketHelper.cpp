@@ -83,6 +83,7 @@ int SocketHelper::Receive(ThreadManager& acTM)
 
         iResult = recv(ClientSocket, recvbuf, recvbuflen, 0);
         recvbuf[iResult] = 0;
+        std::cout << "RIGHT HERE" << std::string(recvbuf) << std::endl;
         acTM.enqueue(std::string(recvbuf));
         if (iResult > 0) {
             printf("Bytes received: %d\n", iResult);
@@ -120,6 +121,7 @@ int SocketHelper::Receive(ThreadManager& acTM)
     // cleanup
     closesocket(ClientSocket);
     WSACleanup();
+    return 0;
 }
 
 void SocketHelper::Send(std::vector<std::string>& resultVector)
