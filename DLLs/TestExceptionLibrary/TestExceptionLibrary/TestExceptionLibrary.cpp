@@ -3,7 +3,7 @@
 using std::string;
 
 bool iTest() {
-	string exce = "A PROBLEM IN A DLL\n";
+	string exce = "A PROBLEM IN A DLL";
 	throw exce;
 	return true;
 }

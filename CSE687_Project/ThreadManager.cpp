@@ -22,6 +22,7 @@ using std::mutex;
 using std::unique_lock;
 
 #include <string>
+using std::remove;
 using std::string;
 using std::wstring;
 
@@ -65,12 +66,15 @@ ThreadManager::~ThreadManager()
 // Empty the input queue and load the DLL information
 void ThreadManager::startProcessing(std::vector<std::string>& resultVector)
 {
-	std::cout << lpcIQ->getcount() << std::endl;
+	int testsSent = lpcIQ->getcount();
 	while (!lpcIQ->getempty())
 	{
-		std::cout << "loadDll is being called" << std::endl;
-		loadDLL(lpcIQ->dequeue(), resultVector);
+		loadDLL(lpcIQ->dequeue());
 	}
+
+	unique_lock<mutex> lock(taskMutex);
+	resultsAvailable.wait(lock, [this, testsSent]() {return results.size() == testsSent; });
+	resultVector = results;
 };
 
 // Wrapper for input queue's enqueue function
@@ -130,32 +134,33 @@ void ThreadManager::setThreads()
 // Function to start a thread and run a DLL process
 void ThreadManager::startThread()
 {
-	function<void()> task;
+	function<bool()> task;
+	string startTime = "";
+	string endTime = "";
 	string result = "";
+	string errorMessage = "";
 	while (true)
 	{
 		unique_lock<mutex> lock(taskMutex);
-		taskAvailable.wait(lock, [this]() {return !dlls.empty() || !done; });
-		if (dlls.empty())
+		taskAvailable.wait(lock, [this]() {return !dlls.empty() || done; });
+		if (dlls.empty() && done)
 		{
 			return;
 		}
 		task = dlls.front();
 		dlls.pop();
-		lock.unlock();
 		try
 		{
-			result = "Test starting at: " + getTime();
-			task();
-			result += "Test Passed!\n";
+			startTime = getTime() + ",";
+			result = task() ? "Pass" : "Fail";
 		}
 		catch (string e)
 		{
-			result += "Test failed with the following error:\n";
-			result += e;
+			result = "Fail,";
+			errorMessage = e;
 		}
-		result += "Test ended at: " + getTime();
-		cout << result << endl;
+		endTime = getTime() + ",";
+		results.back() = results.back() + startTime + endTime + result + errorMessage;
 	}
 };
 
@@ -166,14 +171,16 @@ string ThreadManager::getTime()
 	const time_t convertedTime = system_clock::to_time_t(rawTime);
 	char displayTime[30];
 	ctime_s(displayTime, sizeof displayTime, &convertedTime);
-	return string(displayTime);
+	string timeString(displayTime);
+	timeString.erase(remove(timeString.begin(), timeString.end(), '\n'), timeString.end());
+	return timeString;
 };
 
 // Defining the holder for the iTest function
 typedef bool(__stdcall* _iTest)();
 
 // Function to load a DLL given a location and add that DLL's iTest function to the task queue
-void ThreadManager::loadDLL(string dllLocation, std::vector<std::string>& resultVector)
+void ThreadManager::loadDLL(string dllLocation)
 {
 	// Convert string to wide string
 	wstring location(dllLocation.begin(), dllLocation.end());
@@ -197,6 +204,7 @@ void ThreadManager::loadDLL(string dllLocation, std::vector<std::string>& result
 	// Lock the list of DLLs to add the new DLL
 	unique_lock<mutex> lock(taskMutex);
 	dlls.push(iTest);
+	results.push_back(dllLocation + ",");
 	lock.unlock();
 	taskAvailable.notify_one();
 };

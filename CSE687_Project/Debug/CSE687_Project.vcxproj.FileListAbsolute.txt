@@ -1,0 +1,2 @@
+C:\Users\james\source\repos\CIS687-Test-Harness-Project\CSE687_Project\Debug\CSE687_Project.exe
+C:\Users\james\source\repos\CIS687-Test-Harness-Project\CSE687_Project\Debug\CSE687_Project.pdb

@@ -40,7 +40,7 @@ class ThreadManager
 
 		// Private helper functions
 		std::string getTime();
-		void loadDLL(std::string dllLocation, std::vector<std::string>& resultVector);
+		void loadDLL(std::string dllLocation);
 
 		// Private data members
 		std::queue<std::function<bool()>> dlls;
@@ -48,7 +48,9 @@ class ThreadManager
 		int maxThreads;
 		int runningThreads;
 		std::condition_variable taskAvailable;
+		std::condition_variable resultsAvailable;
 		std::mutex taskMutex;
+		std::vector<std::string> results;
 		std::vector<std::thread> threads;
 };
 
