@@ -65,8 +65,10 @@ ThreadManager::~ThreadManager()
 // Empty the input queue and load the DLL information
 void ThreadManager::startProcessing(std::vector<std::string>& resultVector)
 {
+	std::cout << lpcIQ->getcount() << std::endl;
 	while (!lpcIQ->getempty())
 	{
+		std::cout << "loadDll is being called" << std::endl;
 		loadDLL(lpcIQ->dequeue(), resultVector);
 	}
 };

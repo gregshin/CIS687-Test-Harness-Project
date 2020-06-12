@@ -83,9 +83,9 @@ int SocketHelper::Receive(ThreadManager& acTM)
 
         iResult = recv(ClientSocket, recvbuf, recvbuflen, 0);
         recvbuf[iResult] = 0;
-        std::cout << "RIGHT HERE" << std::string(recvbuf) << std::endl;
-        acTM.enqueue(std::string(recvbuf));
         if (iResult > 0) {
+            std::cout << "Adding filepath to queue: " << std::string(recvbuf) << std::endl;
+            acTM.enqueue(std::string(recvbuf));
             printf("Bytes received: %d\n", iResult);
 
             // Echo the buffer back to the sender
