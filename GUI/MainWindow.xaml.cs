@@ -58,6 +58,7 @@ namespace testHarnessGui
         private void Submit_Click(object sender, RoutedEventArgs e)
         {
             App.netClient.StartClient();
+            App.netClient.StartServer();
         } // end submit click event handler
     } // end partial class window
 } // end namespace

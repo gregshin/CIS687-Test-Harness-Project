@@ -15,7 +15,10 @@ int main(void)
     //resultVector is being passed in as a reference
     lcTM.startProcessing(resultVector);
 
-    // TO DO implement
+    resultVector.push_back("fake");
+    resultVector.push_back("results");
+    resultVector.push_back("Let's get some real ones");
+
     lcSocket.Send(resultVector);
 
     return 0;

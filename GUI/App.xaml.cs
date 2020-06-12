@@ -69,7 +69,6 @@ namespace testHarnessGui
                         // Release the socket.  
                         sender.Shutdown(SocketShutdown.Both);
                         sender.Close();
-
                     }
                     catch (ArgumentNullException ane)
                     {
@@ -84,6 +83,76 @@ namespace testHarnessGui
                         Console.WriteLine("Unexpected exception : {0}", e.ToString());
                     }
                 }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.ToString());
+                }
+            }
+
+            public static void StartServer()
+            {
+                // Establish the local endpoint  
+                // for the socket. Dns.GetHostName 
+                // returns the name of the host  
+                // running the application. 
+                IPHostEntry ipHost = Dns.GetHostEntry(Dns.GetHostName());
+                IPAddress ipAddr = System.Net.IPAddress.Parse("127.0.0.1");
+                IPEndPoint localEndPoint = new IPEndPoint(ipAddr, 1234);
+
+                // Creation TCP/IP Socket using  
+                // Socket Class Costructor 
+                Socket listener = new Socket(ipAddr.AddressFamily,
+                             SocketType.Stream, ProtocolType.Tcp);
+
+                try
+                {
+
+                    // Using Bind() method we associate a 
+                    // network address to the Server Socket 
+                    // All client that will connect to this  
+                    // Server Socket must know this network 
+                    // Address 
+                    listener.Bind(localEndPoint);
+
+                    // Using Listen() method we create  
+                    // the Client list that will want 
+                    // to connect to Server 
+                    listener.Listen(10);
+
+                    Console.WriteLine("Waiting for Results ... ");
+
+                    // Suspend while waiting for 
+                    // incoming connection Using  
+                    // Accept() method the server  
+                    // will accept connection of client 
+                    Socket clientSocket = listener.Accept();
+
+                    // Data buffer 
+                    byte[] bytes = new Byte[1024];
+                    string data = null;
+                    int numByte;
+
+                    do
+                    {
+
+                        numByte = clientSocket.Receive(bytes);
+                        if (numByte > 0)
+                        {
+                            data = Encoding.ASCII.GetString(bytes,
+                                                        0, numByte);
+                            Console.WriteLine("Received:" + data);
+                            Console.WriteLine("Sending Ack Packet");
+
+                            clientSocket.Send(Encoding.ASCII.GetBytes("ack"));
+                        }
+
+                    } while (numByte > 0);
+
+                    clientSocket.Shutdown(SocketShutdown.Both);
+                    clientSocket.Close();
+                    
+                }
+
                 catch (Exception e)
                 {
                     Console.WriteLine(e.ToString());

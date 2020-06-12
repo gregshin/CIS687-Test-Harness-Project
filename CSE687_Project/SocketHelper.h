@@ -20,7 +20,7 @@ class SocketHelper
 {
 public:
 	int Receive(ThreadManager& acTM);
-	void Send(std::vector<std::string>& resultVector);
+	int Send(std::vector<std::string>& resultVector);
 
 	struct ConnectionInfo
 	{
