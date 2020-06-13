@@ -10,9 +10,10 @@
     <StackPanel Margin="10">
         <Button x:Name="BrowseButton" Content="Browse DLLs" HorizontalAlignment="Center"   
                 Width="100" Click="BrowseButton_Click"   
-                Height="30"/>
-        <ListBox Name="fileBox" Height="350" Margin="0 10"/>
-        <Button x:Name="Submit" Content="Submit" Width="100" Height="30" VerticalAlignment="Bottom" Click="Submit_Click"/>
-        <ListBox Name="resultsBox" Height="200" Margin="0 10"  />
+                Height="30" Margin="150,0"/>
+        <ListBox x:Name="fileBox" Height="350" Margin="0 10"/>
+        <Button x:Name="Submit" Content="Submit" Width="100" Height="30" VerticalAlignment="Bottom" Click="Submit_Click" HorizontalAlignment="Left"/>
+        <Button x:Name="Clear" Content="Clear" Width="100" Height="30" VerticalAlignment="Bottom" Click="Clear_Click" HorizontalAlignment="Right"/>
+        <ListBox x:Name="resultsBox" Height="200" Margin="0 10"  />
     </StackPanel>
 </Window>

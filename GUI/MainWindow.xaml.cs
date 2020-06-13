@@ -84,7 +84,11 @@ namespace testHarnessGui
             
         }
 
-
+        private void Clear_Click(object sender, RoutedEventArgs e)
+        {
+            fileBox.Items.Clear();
+            App.dllObj.fileList.Clear();
+        }
     } // end partial class window
 } // end namespace
 
