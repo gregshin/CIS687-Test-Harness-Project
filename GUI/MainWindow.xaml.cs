@@ -59,7 +59,25 @@ namespace testHarnessGui
         {
             App.netClient.StartClient();
             App.netClient.StartServer();
+
+            //public string resultsHolder = App.dllObj.resultsList.Dequeue();
+
+            //verify.Items.Add(App.dllObj.resultsList.Dequeue);
+            
+            //fileBox.App.dllObj.resultsList.
+
         } // end submit click event handler
+
+        private void Results_Click(object snder, RoutedEventArgs e)
+        {
+            foreach (string result in App.dllObj.resultsList)
+            {
+                resultsBox.Items.Add(result);
+                App.dllObj.resultsList.Dequeue();
+            }
+        }
+
+
     } // end partial class window
 } // end namespace
 

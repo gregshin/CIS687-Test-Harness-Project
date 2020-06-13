@@ -20,6 +20,7 @@ namespace testHarnessGui
         static public class dllObj
         {
             static public Queue<string> fileList = new Queue<string>();
+            static public Queue<string> resultsList = new Queue<string>();
         }
 
         // net client class
@@ -138,8 +139,13 @@ namespace testHarnessGui
                         {
                             data = Encoding.ASCII.GetString(bytes,
                                                         0, numByte);
-                            Console.WriteLine("Received:" + data);
-                            Console.WriteLine("Sending Ack Packet");
+                            Console.WriteLine("Received:" + data); // receives data
+
+                            dllObj.resultsList.Enqueue(data); // enqueues results in global queue
+
+                            // object resultsBox = Application.Current.FindResource("verify");
+                            
+                            //Console.WriteLine("Sending Ack Packet"); // acknowledgement packet
 
                             clientSocket.Send(Encoding.ASCII.GetBytes("ack"));
                         }
@@ -148,7 +154,9 @@ namespace testHarnessGui
 
                     clientSocket.Shutdown(SocketShutdown.Both);
                     clientSocket.Close();
-                    
+
+                    MessageBox.Show("Results received");
+
                 }
 
                 catch (Exception e)
@@ -163,5 +171,6 @@ namespace testHarnessGui
             Socket s = receiveSocket.Accept();
             Console.WriteLine("Connection accepted from " + s.RemoteEndPoint);
         } 
+
     }
 }
