@@ -13,7 +13,7 @@ int main(void)
     lcSocket.Receive(lcTM);
 
     //resultVector is being passed in as a reference
-    lcTM.startProcessing(resultVector);
+    resultVector = lcTM.startProcessing();
 
     lcSocket.Send(resultVector);
 

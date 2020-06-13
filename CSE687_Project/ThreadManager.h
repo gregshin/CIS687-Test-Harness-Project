@@ -11,6 +11,16 @@
 #include <vector>
 #include <queue>
 
+struct dllInfo
+{
+	std::string endTime;
+	std::string errorMessage;
+	std::string location;
+	std::string result;
+	std::string startTime;
+	std::function<bool()> task;
+};
+
 class ThreadManager 
 {
 	public:
@@ -31,7 +41,7 @@ class ThreadManager
 
 		// Public functions
 		void enqueue(std::string path);
-		void startProcessing(std::vector<std::string>& resultVector);
+		std::vector<std::string> startProcessing();
 		void startThread();
 
 	private:
@@ -43,7 +53,7 @@ class ThreadManager
 		void loadDLL(std::string dllLocation);
 
 		// Private data members
-		std::queue<std::function<bool()>> dlls;
+		std::queue<dllInfo> dlls;
 		std::atomic<bool> done;
 		int maxThreads;
 		int runningThreads;

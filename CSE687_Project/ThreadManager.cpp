@@ -64,7 +64,7 @@ ThreadManager::~ThreadManager()
 };
 
 // Empty the input queue and load the DLL information
-void ThreadManager::startProcessing(std::vector<std::string>& resultVector)
+vector<string> ThreadManager::startProcessing()
 {
 	int testsSent = lpcIQ->getcount();
 	while (!lpcIQ->getempty())
@@ -72,9 +72,10 @@ void ThreadManager::startProcessing(std::vector<std::string>& resultVector)
 		loadDLL(lpcIQ->dequeue());
 	}
 
+	// Wait for all the results to be available before returning the results vector
 	unique_lock<mutex> lock(taskMutex);
 	resultsAvailable.wait(lock, [this, testsSent]() {return results.size() == testsSent; });
-	resultVector = results;
+	return results;
 };
 
 // Wrapper for input queue's enqueue function
@@ -97,12 +98,10 @@ void ThreadManager::setMaxThreads()
 		: 1;
 };
 
-// Setter for maximum number of threads - sets to user specified number or max possible for CPU
+// Setter for maximum number of threads - sets to user specified number
 void ThreadManager::setMaxThreads(unsigned int threads)
 {
-	maxThreads = (thread::hardware_concurrency() > threads)
-		? threads
-		: thread::hardware_concurrency() - 1;
+	maxThreads = threads;
 };
 
 // Getter for the number of threads currently running
@@ -134,11 +133,6 @@ void ThreadManager::setThreads()
 // Function to start a thread and run a DLL process
 void ThreadManager::startThread()
 {
-	function<bool()> task;
-	string startTime = "";
-	string endTime = "";
-	string result = "";
-	string errorMessage = "";
 	while (true)
 	{
 		unique_lock<mutex> lock(taskMutex);
@@ -147,20 +141,21 @@ void ThreadManager::startThread()
 		{
 			return;
 		}
-		task = dlls.front();
+		dllInfo dllDetails = dlls.front();
 		dlls.pop();
 		try
 		{
-			startTime = getTime() + ",";
-			result = task() ? "Pass" : "Fail";
+			dllDetails.startTime = getTime() + ",";
+			dllDetails.result = dllDetails.task() ? "Pass" : "Fail";
 		}
 		catch (string e)
 		{
-			result = "Fail,";
-			errorMessage = e;
+			dllDetails.result = "Fail,";
+			dllDetails.errorMessage = e;
 		}
-		endTime = getTime() + ",";
-		results.back() = results.back() + startTime + endTime + result + errorMessage;
+		dllDetails.endTime = getTime() + ",";
+		results.push_back(dllDetails.location + dllDetails.startTime + dllDetails.endTime + dllDetails.result + dllDetails.errorMessage);
+		lock.unlock();
 	}
 };
 
@@ -203,8 +198,16 @@ void ThreadManager::loadDLL(string dllLocation)
 
 	// Lock the list of DLLs to add the new DLL
 	unique_lock<mutex> lock(taskMutex);
-	dlls.push(iTest);
-	results.push_back(dllLocation + ",");
+	dlls.push(
+		{
+			"",
+			"",
+			dllLocation + ",",
+			"",
+			"",
+			iTest
+		}
+	);
 	lock.unlock();
 	taskAvailable.notify_one();
 };
