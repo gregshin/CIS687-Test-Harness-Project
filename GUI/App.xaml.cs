@@ -45,8 +45,6 @@ namespace testHarnessGui
                         // try to connect
                         sender.Connect(remoteEP);
 
-                        MessageBox.Show("Socket connected");
-
                         Console.WriteLine("Socket connected to {0}",
                             sender.RemoteEndPoint.ToString());
 
