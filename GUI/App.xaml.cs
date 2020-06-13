@@ -143,10 +143,6 @@ namespace testHarnessGui
 
                             dllObj.resultsList.Enqueue(data); // enqueues results in global queue
 
-                            // object resultsBox = Application.Current.FindResource("verify");
-                            
-                            //Console.WriteLine("Sending Ack Packet"); // acknowledgement packet
-
                             clientSocket.Send(Encoding.ASCII.GetBytes("ack"));
                         }
 
@@ -155,7 +151,7 @@ namespace testHarnessGui
                     clientSocket.Shutdown(SocketShutdown.Both);
                     clientSocket.Close();
 
-                    MessageBox.Show("Results received");
+                    //MessageBox.Show("Results received");
 
                 }
 

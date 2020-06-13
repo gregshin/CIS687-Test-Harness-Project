@@ -32,6 +32,11 @@ namespace testHarnessGui
             InitializeComponent();   
         } // end main window
 
+        public ListBox getResultsBox()
+        {
+            return this.resultsBox;
+        }
+
         private void BrowseButton_Click(object sender, RoutedEventArgs e)
         {
             // Create OpenFileDialog
@@ -60,6 +65,8 @@ namespace testHarnessGui
             App.netClient.StartClient();
             App.netClient.StartServer();
 
+            DisplayResults();
+
             //public string resultsHolder = App.dllObj.resultsList.Dequeue();
 
             //verify.Items.Add(App.dllObj.resultsList.Dequeue);
@@ -68,13 +75,13 @@ namespace testHarnessGui
 
         } // end submit click event handler
 
-        private void Results_Click(object snder, RoutedEventArgs e)
+        private void DisplayResults()
         {
-            foreach (string result in App.dllObj.resultsList)
+            while (App.dllObj.resultsList.Count != 0)
             {
-                resultsBox.Items.Add(result);
-                App.dllObj.resultsList.Dequeue();
+                resultsBox.Items.Add(App.dllObj.resultsList.Dequeue());
             }
+            
         }
 
 
