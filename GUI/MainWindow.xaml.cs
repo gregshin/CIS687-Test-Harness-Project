@@ -29,7 +29,7 @@ namespace testHarnessGui
         public MainWindow()
         {
             // init main window component
-            InitializeComponent();   
+            InitializeComponent();
         } // end main window
 
         public ListBox getResultsBox()
@@ -47,11 +47,11 @@ namespace testHarnessGui
             openFile.Filter = "dll files (*.dll)|*.dll|All files (*.*)|*.*";
             // set initial file directory
             openFile.InitialDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
-            
+
             // add opened files to the fileList and filebox
             if (openFile.ShowDialog() == true)
             {
-                foreach(string fileName in openFile.FileNames)
+                foreach (string fileName in openFile.FileNames)
                 {
                     App.dllObj.fileList.Enqueue(fileName);
                     fileBox.Items.Add(fileName);
@@ -70,18 +70,35 @@ namespace testHarnessGui
             //public string resultsHolder = App.dllObj.resultsList.Dequeue();
 
             //verify.Items.Add(App.dllObj.resultsList.Dequeue);
-            
+
             //fileBox.App.dllObj.resultsList.
 
         } // end submit click event handler
 
         private void DisplayResults()
         {
+
             while (App.dllObj.resultsList.Count != 0)
             {
-                resultsBox.Items.Add(App.dllObj.resultsList.Dequeue());
+
+                resultsBox.Items.Add("==========");
+                string[] resultSingle = App.dllObj.resultsList.Dequeue().Split(',');
+                //resultSingle.Replace(",", "\n");
+                //MessageBox.Show("results replaced");
+
+
+                resultsBox.Items.Add("File Path:\t\t" + resultSingle[0]);
+                resultsBox.Items.Add("Start Time:\t" + resultSingle[1]);
+                resultsBox.Items.Add("End Time:\t" + resultSingle[2]);
+                resultsBox.Items.Add("Result:\t\t" + resultSingle[3]);
+
+                if (resultSingle.Length == 5)
+                {
+                    resultsBox.Items.Add("Exception\t" + resultSingle[3]);
+                }
             }
-            
+
+            resultsBox.Items.Add("==========\n");
         }
 
         private void Clear_Click(object sender, RoutedEventArgs e)
