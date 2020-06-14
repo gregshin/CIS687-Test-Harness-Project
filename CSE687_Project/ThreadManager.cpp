@@ -160,6 +160,7 @@ void ThreadManager::startThread()
 		lock.lock();
 		results.push_back(dllDetails.location + dllDetails.startTime + dllDetails.endTime + dllDetails.result + dllDetails.errorMessage);
 		lock.unlock();
+		resultsAvailable.notify_one();
 	}
 };
 
