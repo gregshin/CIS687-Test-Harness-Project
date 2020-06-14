@@ -116,6 +116,16 @@ namespace testHarnessGui
             fileBox.Items.Clear();
             App.dllObj.fileList.Clear();
         }
+
+        private void RemoveDll_Click(object sender, RoutedEventArgs e)
+        {
+            fileBox.Items.Remove(fileBox.SelectedItem);
+        }
+
+        private void ClearResults_Click(object sender, RoutedEventArgs e)
+        {
+            resultsBox.Items.Clear();
+        }
     } // end partial class window
 } // end namespace
 

@@ -5,17 +5,29 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:testHarnessGui"
         mc:Ignorable="d"
-        Title="MainWindow" Width="640" Height="850">
+        Title="MainWindow" Width="640" Height="775">
 
     <StackPanel Margin="10">
-        <ListBox x:Name="fileBox" Height="350" Margin="0 10" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto"/>
         <Grid>
-            <Button x:Name="BrowseButton" Content="Browse DLLs" HorizontalAlignment="Center"   
-                Width="100" Click="BrowseButton_Click"   
-                Height="30" Margin="0 0 250 0" />
-            <Button x:Name="Submit" Content="Submit" Width="100" Height="30" VerticalAlignment="Bottom" Click="Submit_Click" HorizontalAlignment="Center"/>
-            <Button x:Name="Clear" Content="Clear" Width="100" Height="30" VerticalAlignment="Bottom" Click="Clear_Click" HorizontalAlignment="Center" Margin="250 0 0 0"/>
+            <StackPanel Width="125" Height="350" HorizontalAlignment="Left">
+                <TextBlock FontSize="16" HorizontalAlignment="Center" Margin="0 75 0 0" TextDecorations="Underline">
+                    <Bold>Selection</Bold>
+                </TextBlock>
+                <Button x:Name="BrowseButton" Content="Browse DLLs" Width="100" Click="BrowseButton_Click" Height="30" Margin="0 10 0 0"/>
+                <Button x:Name="RemoveDll" Content="Remove" Width="100" Height="30" Margin="0 10 0 0" Click="RemoveDll_Click" />
+                <Button x:Name="Clear" Content="Clear" Width="100" Height="30" Margin="0 10 0 0" Click="Clear_Click" />
+                <Button x:Name="Submit" Content="Submit" Width="100" Height="30" VerticalAlignment="Bottom" Click="Submit_Click" Margin="0 10 0 0" HorizontalAlignment="Center"/>
+            </StackPanel>
+            <ListBox x:Name="fileBox" Height="350" Width="475" HorizontalAlignment="Right" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto"/>
         </Grid>
-        <ListBox x:Name="resultsBox" Height="350" Margin="0 10" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" />
+        <Grid>
+            <StackPanel Width="125" Height="350" HorizontalAlignment="Left">
+                <TextBlock FontSize="16" HorizontalAlignment="Center" Margin="0 125 0 0" TextDecorations="Underline">
+                    <Bold>Results</Bold>
+                </TextBlock>
+                <Button x:Name="ClearResults" Content="Clear" Width="100" Height="30" Margin="0 10 0 0" Click="ClearResults_Click" />
+            </StackPanel>
+            <ListBox x:Name="resultsBox" Height="350" Width="475" Margin="0 10" HorizontalAlignment="Right" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" />
+        </Grid>
     </StackPanel>
 </Window>
