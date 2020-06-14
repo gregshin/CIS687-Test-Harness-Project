@@ -30,6 +30,9 @@ namespace testHarnessGui
         {
             // init main window component
             InitializeComponent();
+
+
+
         } // end main window
 
         public ListBox getResultsBox()
@@ -86,6 +89,20 @@ namespace testHarnessGui
                 //resultSingle.Replace(",", "\n");
                 //MessageBox.Show("results replaced");
 
+                using (StreamWriter s = File.AppendText("log.txt"))
+                {
+                    s.WriteLine("==========");
+                    s.WriteLine("File Path:\t" + resultSingle[0]);
+                    s.WriteLine("Start Time:\t" + resultSingle[1]);
+                    s.WriteLine("End Time:\t" + resultSingle[2]);
+                    s.WriteLine("Result:\t\t" + resultSingle[3]);
+
+                    if (resultSingle.Length == 5)
+                    {
+                        resultsBox.Items.Add("Exception\t" + resultSingle[3]);
+                    }
+
+                }
 
                 resultsBox.Items.Add("File Path:\t\t" + resultSingle[0]);
                 resultsBox.Items.Add("Start Time:\t" + resultSingle[1]);
