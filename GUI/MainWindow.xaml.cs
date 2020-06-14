@@ -42,7 +42,18 @@ namespace testHarnessGui
             // set what files it can accept
             openFile.Filter = "dll files (*.dll)|*.dll|All files (*.*)|*.*";
             // set initial file directory
-            openFile.InitialDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
+            string filePath = System.AppDomain.CurrentDomain.BaseDirectory;
+            string directoryName = "";
+            for (int i = 0; i < 5; i++)
+            {
+                directoryName = System.IO.Path.GetDirectoryName(filePath);
+                filePath = directoryName;
+                if (i == 1)
+                {
+                    filePath = directoryName + @"\";
+                }
+            }
+            openFile.InitialDirectory = directoryName;
 
             // add opened files to the fileList and filebox
             if (openFile.ShowDialog() == true)
