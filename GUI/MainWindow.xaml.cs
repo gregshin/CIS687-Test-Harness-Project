@@ -93,7 +93,7 @@ namespace testHarnessGui
 
                     if (resultSingle.Length == 5)
                     {
-                        resultsBox.Items.Add("Exception\t" + resultSingle[3]);
+                        s.WriteLine(("Exception\t" + resultSingle[4]);
                     }
 
                 }
