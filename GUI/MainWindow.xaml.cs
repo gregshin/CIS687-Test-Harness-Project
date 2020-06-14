@@ -58,9 +58,11 @@ namespace testHarnessGui
         // procedure to create output string
         private void Submit_Click(object sender, RoutedEventArgs e)
         {
+            MessageBox.Show("Starting Send");
             App.netClient.StartClient();
+            MessageBox.Show("Waiting for results");
             App.netClient.StartServer();
-
+            MessageBox.Show("Displaying Results");
             DisplayResults();
 
             //public string resultsHolder = App.dllObj.resultsList.Dequeue();

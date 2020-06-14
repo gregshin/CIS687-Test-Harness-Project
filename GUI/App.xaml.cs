@@ -58,8 +58,10 @@ namespace testHarnessGui
                             // encode message as ascii
                             msg = Encoding.ASCII.GetBytes(filePath);
 
-                            // Send the data through the socket.  
+                            // Send the data through the socket. 
+                            Console.WriteLine("sending bytes");
                             bytesSent = sender.Send(msg);
+                            Console.WriteLine("receiving bytes");
                             bytesRec = sender.Receive(bytes);
                             Console.WriteLine("Echo: ",
                                 Encoding.ASCII.GetString(bytes, 0, bytesRec));
