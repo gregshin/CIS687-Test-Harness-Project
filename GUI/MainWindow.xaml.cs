@@ -71,17 +71,18 @@ namespace testHarnessGui
 
         } // end submit click event handler
 
+        // method to display results
         private void DisplayResults()
         {
-
+            // while the resultslist is not empty
             while (App.dllObj.resultsList.Count != 0)
             {
-
+                // prep the results box
                 resultsBox.Items.Add("==========");
+                // dequeue from the results list and split
                 string[] resultSingle = App.dllObj.resultsList.Dequeue().Split(',');
-                //resultSingle.Replace(",", "\n");
-                //MessageBox.Show("results replaced");
 
+                // save results to file
                 using (StreamWriter s = File.AppendText("log.txt"))
                 {
                     s.WriteLine("==========");
@@ -96,7 +97,7 @@ namespace testHarnessGui
                     }
 
                 }
-
+                // display results in the results box
                 resultsBox.Items.Add("File Path:\t\t" + resultSingle[0]);
                 resultsBox.Items.Add("Start Time:\t" + resultSingle[1]);
                 resultsBox.Items.Add("End Time:\t" + resultSingle[2]);
@@ -107,10 +108,9 @@ namespace testHarnessGui
                     resultsBox.Items.Add("Exception\t" + resultSingle[3]);
                 }
             }
-
-            resultsBox.Items.Add("==========\n");
         }
 
+        // method to clear the dll list box on click event
         private void Clear_Click(object sender, RoutedEventArgs e)
         {
             fileBox.Items.Clear();
