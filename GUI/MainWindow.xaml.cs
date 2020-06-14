@@ -31,14 +31,7 @@ namespace testHarnessGui
             // init main window component
             InitializeComponent();
 
-
-
         } // end main window
-
-        public ListBox getResultsBox()
-        {
-            return this.resultsBox;
-        }
 
         private void BrowseButton_Click(object sender, RoutedEventArgs e)
         {
