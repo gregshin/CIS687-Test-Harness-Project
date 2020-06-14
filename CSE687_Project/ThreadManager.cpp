@@ -72,9 +72,11 @@ vector<string> ThreadManager::startProcessing()
 		loadDLL(lpcIQ->dequeue());
 	}
 
-	// Wait for all the results to be available before returning the results vector
-	unique_lock<mutex> lock(taskMutex);
-	resultsAvailable.wait(lock, [this, testsSent]() {return results.size() == testsSent; });
+	{
+		// Wait for all the results to be available before returning the results vector
+		unique_lock<mutex> lock(taskMutex);
+		resultsAvailable.wait(lock, [this, testsSent]() {return results.size() == testsSent; });
+	}
 	return results;
 };
 
@@ -143,6 +145,7 @@ void ThreadManager::startThread()
 		}
 		dllInfo dllDetails = dlls.front();
 		dlls.pop();
+		lock.unlock();
 		try
 		{
 			dllDetails.startTime = getTime() + ",";
@@ -154,6 +157,7 @@ void ThreadManager::startThread()
 			dllDetails.errorMessage = e;
 		}
 		dllDetails.endTime = getTime() + ",";
+		lock.lock();
 		results.push_back(dllDetails.location + dllDetails.startTime + dllDetails.endTime + dllDetails.result + dllDetails.errorMessage);
 		lock.unlock();
 	}
