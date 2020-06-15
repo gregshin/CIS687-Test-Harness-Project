@@ -152,9 +152,6 @@ namespace testHarnessGui
 
                     clientSocket.Shutdown(SocketShutdown.Both);
                     clientSocket.Close();
-
-                    //MessageBox.Show("Results received");
-
                 }
 
                 catch (Exception e)
